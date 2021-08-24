@@ -3,8 +3,7 @@ class FigureCalculator {
     this._mathBasic = mathBasic;
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  _verifyArgs(args, expectedArgsCount) {
+  static _verifyArgs(args, expectedArgsCount) {
     if (args.length !== expectedArgsCount) {
       throw new Error(`fungsi hanya menerima ${expectedArgsCount} parameter`);
     }
