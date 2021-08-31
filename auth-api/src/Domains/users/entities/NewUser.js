@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 /* eslint-disable class-methods-use-this */
 class NewUser {
   constructor(payload) {
