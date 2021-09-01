@@ -1,5 +1,5 @@
-class ThreadRepository {
-  async addCommentByThreadId(threadId, newComment) {
+class CommentRepository {
+  async addCommentByThreadId(newComment, threadId, owner) {
     throw new Error('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 
@@ -12,4 +12,4 @@ class ThreadRepository {
   }
 }
 
-module.exports = ThreadRepository;
+module.exports = CommentRepository;
