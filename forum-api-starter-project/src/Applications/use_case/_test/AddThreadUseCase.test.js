@@ -9,11 +9,12 @@ describe('AddThreadUseCase', () => {
     const useCasePayload = {
       title: 'dicoding',
       body: 'secret',
+      owner: 'user-123',
     };
     const expectedAddedThread = new AddedThread({
       id: 'thread-123',
       title: useCasePayload.title,
-      owner: 'user-123',
+      owner: useCasePayload.owner,
     });
 
     /** creating dependency of use case */
@@ -36,6 +37,7 @@ describe('AddThreadUseCase', () => {
     expect(mockThreadRepository.addThread).toBeCalledWith(new NewThread({
       title: useCasePayload.title,
       body: useCasePayload.body,
+      owner: useCasePayload.owner,
     }));
   });
 });
