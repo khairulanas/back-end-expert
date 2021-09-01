@@ -5,6 +5,7 @@ describe('a NewThread entities', () => {
     // Arrange
     const payload = {
       title: 'sebuah thread',
+      owner: 'user-123',
     };
 
     // Action and Assert
@@ -16,6 +17,7 @@ describe('a NewThread entities', () => {
     const payload = {
       title: 'sebuah thread',
       body: 123,
+      owner: 'user-123',
     };
 
     // Action and Assert
@@ -27,6 +29,7 @@ describe('a NewThread entities', () => {
     const payload = {
       title: 'sebuah thread',
       body: 'sebuah thread body',
+      owner: 'user-123',
     };
 
     // Action
