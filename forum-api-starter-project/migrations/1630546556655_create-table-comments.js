@@ -12,11 +12,11 @@ exports.up = (pgm) => {
       type: 'VARCHAR(50)',
       notNull: true,
     },
-    date: {
+    content: {
       type: 'TEXT',
       notNull: true,
     },
-    content: {
+    date: {
       type: 'TEXT',
       notNull: true,
     },
