@@ -10,11 +10,11 @@ exports.up = (pgm) => {
     },
     thread_id: {
       type: 'VARCHAR(50)',
-      primaryKey: true,
+      notNull: true,
     },
     comment_id: {
       type: 'VARCHAR(50)',
-      primaryKey: true,
+      notNull: true,
     },
     date: {
       type: 'TEXT',
