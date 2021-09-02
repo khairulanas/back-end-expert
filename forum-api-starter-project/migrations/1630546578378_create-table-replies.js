@@ -27,6 +27,7 @@ exports.up = (pgm) => {
     is_delete: {
       type: 'BOOL',
       notNull: true,
+      default: false,
     },
     owner: {
       type: 'VARCHAR(50)',
