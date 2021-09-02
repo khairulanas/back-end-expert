@@ -8,13 +8,13 @@ class AddReplyUseCase {
   async execute(useCasePayload) {
     const {
       content,
-      commentId,
       threadId,
+      commentId,
       owner,
     } = useCasePayload;
     const newComment = new NewComment({ content });
     return this._commentRepository
-      .addReply(newComment, commentId, threadId, owner);
+      .addReply(newComment, threadId, commentId, owner);
   }
 }
 

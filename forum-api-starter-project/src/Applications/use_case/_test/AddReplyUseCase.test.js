@@ -8,8 +8,8 @@ describe('AddReplyUseCase', () => {
     // Arrange
     const useCasePayload = {
       content: 'dicoding',
-      commentId: 'comment-123',
       threadId: 'thread-123',
+      commentId: 'comment-123',
       owner: 'user-123',
     };
     const expectedAddedReply = new AddedComment({
@@ -39,8 +39,8 @@ describe('AddReplyUseCase', () => {
       new NewComment({
         content: useCasePayload.content,
       }),
-      useCasePayload.commentId,
       useCasePayload.threadId,
+      useCasePayload.commentId,
       useCasePayload.owner,
     );
   });
