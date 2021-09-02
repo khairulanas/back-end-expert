@@ -24,6 +24,10 @@ exports.up = (pgm) => {
       type: 'TEXT',
       notNull: true,
     },
+    is_delete: {
+      type: 'BOOL',
+      notNull: true,
+    },
     owner: {
       type: 'VARCHAR(50)',
       notNull: true,
