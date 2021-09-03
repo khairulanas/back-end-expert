@@ -1,8 +1,8 @@
-const NewComment = require('../../Domains/comments/entities/NewComment');
+const NewReply = require('../../Domains/replies/entities/NewReply');
 
 class AddReplyUseCase {
-  constructor({ commentRepository }) {
-    this._commentRepository = commentRepository;
+  constructor({ replyRepository }) {
+    this._replyRepository = replyRepository;
   }
 
   async execute(useCasePayload) {
@@ -12,9 +12,9 @@ class AddReplyUseCase {
       commentId,
       owner,
     } = useCasePayload;
-    const newComment = new NewComment({ content });
-    return this._commentRepository
-      .addReply(newComment, threadId, commentId, owner);
+    const newReply = new NewReply({ content });
+    return this._replyRepository
+      .addReply(newReply, threadId, commentId, owner);
   }
 }
 

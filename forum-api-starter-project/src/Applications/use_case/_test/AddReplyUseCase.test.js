@@ -1,6 +1,6 @@
-const NewComment = require('../../../Domains/comments/entities/NewComment');
-const AddedComment = require('../../../Domains/comments/entities/AddedComment');
-const CommentRepository = require('../../../Domains/comments/CommentRepository');
+const NewReply = require('../../../Domains/replies/entities/NewReply');
+const AddedReply = require('../../../Domains/replies/entities/AddedReply');
+const ReplyRepository = require('../../../Domains/replies/ReplyRepository');
 const AddReplyUseCase = require('../AddReplyUseCase');
 
 describe('AddReplyUseCase', () => {
@@ -12,22 +12,22 @@ describe('AddReplyUseCase', () => {
       commentId: 'comment-123',
       owner: 'user-123',
     };
-    const expectedAddedReply = new AddedComment({
-      id: 'thread-123',
+    const expectedAddedReply = new AddedReply({
+      id: 'reply-123',
       content: useCasePayload.content,
       owner: useCasePayload.owner,
     });
 
     /** creating dependency of use case */
-    const mockCommentRepository = new CommentRepository();
+    const mockReplyRepository = new ReplyRepository();
 
     /** mocking needed function */
-    mockCommentRepository.addReply = jest.fn()
+    mockReplyRepository.addReply = jest.fn()
       .mockImplementation(() => Promise.resolve(expectedAddedReply));
 
     /** creating use case instance */
     const addReplyUseCase = new AddReplyUseCase({
-      commentRepository: mockCommentRepository,
+      replyRepository: mockReplyRepository,
     });
 
     // Action
@@ -35,8 +35,8 @@ describe('AddReplyUseCase', () => {
 
     // Assert
     expect(addedReply).toStrictEqual(expectedAddedReply);
-    expect(mockCommentRepository.addReply).toBeCalledWith(
-      new NewComment({
+    expect(mockReplyRepository.addReply).toBeCalledWith(
+      new NewReply({
         content: useCasePayload.content,
       }),
       useCasePayload.threadId,

@@ -1,6 +1,6 @@
 class DeleteReplyUseCase {
-  constructor({ commentRepository }) {
-    this._commentRepository = commentRepository;
+  constructor({ replyRepository }) {
+    this._replyRepository = replyRepository;
   }
 
   async execute(useCasePayload) {
@@ -8,8 +8,8 @@ class DeleteReplyUseCase {
       replyId,
       credentialId,
     } = useCasePayload;
-    await this._commentRepository.verifyReplyAccess(replyId, credentialId);
-    return this._commentRepository
+    await this._replyRepository.verifyReplyAccess(replyId, credentialId);
+    return this._replyRepository
       .deleteReplyByReplyId(replyId);
   }
 }

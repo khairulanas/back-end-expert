@@ -1,4 +1,4 @@
-const CommentRepository = require('../../../Domains/comments/CommentRepository');
+const ReplyRepository = require('../../../Domains/replies/ReplyRepository');
 const DeleteReplyUseCase = require('../DeleteReplyUseCase');
 
 describe('DeleteReplyUseCase', () => {
@@ -13,17 +13,17 @@ describe('DeleteReplyUseCase', () => {
     };
 
     /** creating dependency of use case */
-    const mockCommentRepository = new CommentRepository();
+    const mockReplyRepository = new ReplyRepository();
 
     /** mocking needed function */
-    mockCommentRepository.verifyReplyAccess = jest.fn()
+    mockReplyRepository.verifyReplyAccess = jest.fn()
       .mockImplementation(() => Promise.resolve());
-    mockCommentRepository.deleteReplyByReplyId = jest.fn()
+    mockReplyRepository.deleteReplyByReplyId = jest.fn()
       .mockImplementation(() => Promise.resolve(expectedDeletedReply));
 
     /** creating use case instance */
     const deleteReplyUseCase = new DeleteReplyUseCase({
-      commentRepository: mockCommentRepository,
+      replyRepository: mockReplyRepository,
     });
 
     // Action
@@ -31,11 +31,11 @@ describe('DeleteReplyUseCase', () => {
 
     // Assert
     expect(deletedReply).toStrictEqual(expectedDeletedReply);
-    expect(mockCommentRepository.verifyReplyAccess).toBeCalledWith(
+    expect(mockReplyRepository.verifyReplyAccess).toBeCalledWith(
       useCasePayload.replyId,
       useCasePayload.credentialId,
     );
-    expect(mockCommentRepository.deleteReplyByReplyId).toBeCalledWith(
+    expect(mockReplyRepository.deleteReplyByReplyId).toBeCalledWith(
       useCasePayload.replyId,
     );
   });
