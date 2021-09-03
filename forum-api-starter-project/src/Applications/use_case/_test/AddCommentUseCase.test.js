@@ -21,7 +21,7 @@ describe('AddCommentUseCase', () => {
     const mockCommentRepository = new CommentRepository();
 
     /** mocking needed function */
-    mockCommentRepository.addCommentByThreadId = jest.fn()
+    mockCommentRepository.addComment = jest.fn()
       .mockImplementation(() => Promise.resolve(expectedAddedComment));
 
     /** creating use case instance */
@@ -34,7 +34,7 @@ describe('AddCommentUseCase', () => {
 
     // Assert
     expect(addedComment).toStrictEqual(expectedAddedComment);
-    expect(mockCommentRepository.addCommentByThreadId).toBeCalledWith(
+    expect(mockCommentRepository.addComment).toBeCalledWith(
       new NewComment({
         content: useCasePayload.content,
       }),
