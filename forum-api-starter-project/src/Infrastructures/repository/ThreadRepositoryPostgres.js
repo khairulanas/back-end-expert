@@ -1,5 +1,5 @@
 const InvariantError = require('../../Commons/exceptions/InvariantError');
-const { mapDBToDetailThread } = require('../../Commons/utils/mapdb');
+const { mapDBToDetailThread, mapDBToDetailComment, mapDBToDetailReply } = require('../../Commons/utils/mapdb');
 const AddedThread = require('../../Domains/threads/entities/AddedThread');
 const ThreadRepository = require('../../Domains/threads/ThreadRepository');
 
@@ -37,7 +37,27 @@ class ThreadRepositoryPostgres extends ThreadRepository {
     if (!result.rowCount) {
       throw new InvariantError('thread tidak ditemukan');
     }
-    return result.rows.map(mapDBToDetailThread)[0];
+
+    // get comments in thread
+    const commentsQuery = {
+      text: 'SELECT * FROM comments where thread_id = $1',
+      values: [threadId],
+    };
+    const resComments = await this._pool.query(commentsQuery);
+
+    // get replies in thread
+    const repliesQuery = {
+      text: 'SELECT * FROM replies where thread_id = $1',
+      values: [threadId],
+    };
+    const resReplies = await this._pool.query(repliesQuery);
+
+    const replies = (commentId) => resReplies.rows.filter((i) => i.comment_id === commentId)
+      .map(mapDBToDetailReply);
+    const comments = resComments.rows.map((i) => ({ ...i, replies: replies(i.comment_id) }))
+      .map(mapDBToDetailComment);
+    return result.rows.map(mapDBToDetailThread)
+      .map((i) => ({ ...i, comments }))[0];
   }
 }
 

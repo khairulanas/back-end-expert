@@ -1,4 +1,5 @@
 /* istanbul ignore file */
+const { mapDBToDetailReply, mapDBToDetailComment, mapDBToDetailThread } = require('../src/Commons/utils/mapdb');
 const pool = require('../src/Infrastructures/database/postgres/pool');
 
 const ThreadsTableTestHelper = {
@@ -17,14 +18,33 @@ const ThreadsTableTestHelper = {
     await pool.query(query);
   },
 
-  async getThreadById(id) {
+  async getThreadById(threadId) {
     const query = {
       text: 'SELECT * FROM threads WHERE id = $1',
-      values: [id],
+      values: [threadId],
     };
-
     const result = await pool.query(query);
-    return result.rows;
+
+    // get comments in thread
+    const commentsQuery = {
+      text: 'SELECT * FROM comments where thread_id = $1',
+      values: [threadId],
+    };
+    const resComments = await pool.query(commentsQuery);
+
+    // get replies in thread
+    const repliesQuery = {
+      text: 'SELECT * FROM replies where thread_id = $1',
+      values: [threadId],
+    };
+    const resReplies = await pool.query(repliesQuery);
+
+    const replies = (commentId) => resReplies.rows.filter((i) => i.comment_id === commentId)
+      .map(mapDBToDetailReply);
+    const comments = resComments.rows.map((i) => ({ ...i, replies: replies(i.comment_id) }))
+      .map(mapDBToDetailComment);
+    return result.rows.map(mapDBToDetailThread)
+      .map((i) => ({ ...i, comments }));
   },
 
   async cleanTable() {

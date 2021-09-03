@@ -6,6 +6,7 @@ const AddedThread = require('../../../Domains/threads/entities/AddedThread');
 const pool = require('../../database/postgres/pool');
 const ThreadRepositoryPostgres = require('../ThreadRepositoryPostgres');
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
+const CommentsTableTestHelper = require('../../../../tests/CommentsTableTestHelper');
 
 describe('ThreadRepositoryPostgres', () => {
   it('should be instance of ThreadRepository domain', () => {
@@ -69,6 +70,11 @@ describe('ThreadRepositoryPostgres', () => {
           body: 'magical mode',
           owner: 'user-321',
         });
+        await CommentsTableTestHelper.addComment({
+          id: 'comment-123',
+          threadId: 'thread-321',
+          owner: 'user-321',
+        });
         const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
 
         // Action
@@ -78,6 +84,8 @@ describe('ThreadRepositoryPostgres', () => {
         expect(detailThread.title).toEqual('kanaha');
         expect(detailThread.body).toEqual('magical mode');
         expect(detailThread.username).toEqual('user-321');
+        expect(detailThread.comments).toHaveLength(1);
+        expect(detailThread.comments[0].username).toEqual('user-321');
       });
     });
   });
