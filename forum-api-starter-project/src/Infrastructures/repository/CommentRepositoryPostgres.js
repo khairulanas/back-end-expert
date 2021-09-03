@@ -35,7 +35,7 @@ class CommentRepositoryPostgres extends CommentRepository {
     const result = await this._pool.query(query);
 
     if (!result.rowCount) {
-      throw new NotFoundError('Playlist tidak ditemukan');
+      throw new NotFoundError('comment tidak ditemukan');
     }
     const comment = result.rows[0];
     if (comment.owner !== credentialId) {
@@ -51,7 +51,7 @@ class CommentRepositoryPostgres extends CommentRepository {
     const result = await this._pool.query(query);
 
     if (!result.rowCount) {
-      throw new NotFoundError('thread tidak ditemukan');
+      throw new NotFoundError('comment tidak ditemukan');
     }
 
     return { status: 'success' };
