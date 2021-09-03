@@ -1,5 +1,9 @@
 const InvariantError = require('../../Commons/exceptions/InvariantError');
-const { mapDBToDetailThread, mapDBToDetailComment, mapDBToDetailReply } = require('../../Commons/utils/mapdb');
+const {
+  mapDBToDetailThread,
+  mapDBToDetailComment,
+  mapDBToDetailReply,
+} = require('../../Commons/utils/mapdb');
 const AddedThread = require('../../Domains/threads/entities/AddedThread');
 const ThreadRepository = require('../../Domains/threads/ThreadRepository');
 
