@@ -106,6 +106,16 @@ describe('CommentRepositoryPostgres', () => {
     });
 
     describe('deleteCommentByCommentId', () => {
+      it('should throw NotFoundError when comment not found', async () => {
+        // Arrange
+        const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
+
+        // Action & Assert
+        await expect(commentRepositoryPostgres.deleteCommentByCommentId('comment-123'))
+          .rejects
+          .toThrowError(NotFoundError);
+      });
+
       it('should return success and update is_delete column correctly', async () => {
         // Arrange
         await UsersTableTestHelper.addUser({ id: 'user-123' });
