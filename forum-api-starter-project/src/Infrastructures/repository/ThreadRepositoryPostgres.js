@@ -45,21 +45,25 @@ class ThreadRepositoryPostgres extends ThreadRepository {
 
     // get comments in thread
     const commentsQuery = {
-      text: 'SELECT * FROM comments where thread_id = $1',
+      text: 'SELECT * FROM comments where thread_id = $1 ORDER BY date ASC',
       values: [threadId],
     };
     const resComments = await this._pool.query(commentsQuery);
 
     // get replies in thread
     const repliesQuery = {
-      text: 'SELECT * FROM replies where thread_id = $1',
+      text: 'SELECT * FROM replies where thread_id = $1 ORDER BY date ASC',
       values: [threadId],
     };
     const resReplies = await this._pool.query(repliesQuery);
 
     const replies = (commentId) => resReplies.rows.filter((i) => i.comment_id === commentId)
       .map(mapDBToDetailReply);
-    const comments = resComments.rows.map((i) => ({ ...i, replies: replies(i.id) }))
+    const comments = resComments.rows.map((i) => ({
+      ...i,
+      content: i.is_delete ? '**komentar telah dihapus**' : i.content,
+      replies: replies(i.id),
+    }))
       .map(mapDBToDetailComment);
     const thread = result.rows.map(mapDBToDetailThread)
       .map((i) => ({ ...i, comments }))[0];
