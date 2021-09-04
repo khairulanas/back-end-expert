@@ -18,7 +18,7 @@ class CommentRepositoryPostgres extends CommentRepository {
     const isDelete = false;
 
     const queryThread = {
-      text: 'SELECT id FROM threads WHERE id = $1',
+      text: 'SELECT * FROM threads WHERE id = $1',
       values: [threadId],
     };
     const resultThread = await this._pool.query(queryThread);

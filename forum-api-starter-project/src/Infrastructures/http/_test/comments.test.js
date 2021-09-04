@@ -102,6 +102,31 @@ describe('/threads/{threadId}/comments endpoint', () => {
       // Assert
       expect(response.statusCode).toEqual(401);
     });
+
+    it('should response 404 when no thread found', async () => {
+      // Arrange
+      const requestPayload = {
+        content: 'kana hazawa',
+      };
+      const accessToken = await ServerTesthelper.getAccessToken({ id: 'user-123' });
+      const server = await createServer(injections);
+
+      // Action
+      const response = await server.inject({
+        method: 'POST',
+        url: '/threads/xxx/comments',
+        payload: requestPayload,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(404);
+      expect(responseJson.status).toEqual('fail');
+      expect(responseJson.message).toBeDefined();
+    });
   });
 
   describe('when DELETE /threads/{threadId}/comments/{commentId}', () => {
