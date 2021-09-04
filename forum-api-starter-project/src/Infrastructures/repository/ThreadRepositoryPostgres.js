@@ -5,6 +5,7 @@ const {
   mapDBToDetailReply,
 } = require('../../Commons/utils/mapdb');
 const AddedThread = require('../../Domains/threads/entities/AddedThread');
+const DetailThread = require('../../Domains/threads/entities/DetailThread');
 const ThreadRepository = require('../../Domains/threads/ThreadRepository');
 
 class ThreadRepositoryPostgres extends ThreadRepository {
@@ -60,8 +61,10 @@ class ThreadRepositoryPostgres extends ThreadRepository {
       .map(mapDBToDetailReply);
     const comments = resComments.rows.map((i) => ({ ...i, replies: replies(i.id) }))
       .map(mapDBToDetailComment);
-    return result.rows.map(mapDBToDetailThread)
+    const thread = result.rows.map(mapDBToDetailThread)
       .map((i) => ({ ...i, comments }))[0];
+
+    return new DetailThread({ ...thread });
   }
 }
 
