@@ -52,6 +52,31 @@ describe('ReplyRepositoryPostgres', () => {
         }));
         expect(reply).toHaveLength(1);
       });
+      it('should throw NotFoundError when thread not found', async () => {
+        // Arrange
+        const newReply = new NewReply({ content: 'kana' });
+        await UsersTableTestHelper.addUser({ id: 'user-123' });
+        const fakeIdGenerator = () => '123'; // stub!
+        const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, fakeIdGenerator);
+
+        // Action & Assert
+        await expect(replyRepositoryPostgres
+          .addReply(newReply, 'thread-123', 'comment-123', 'user-123'))
+          .rejects.toThrowError(NotFoundError);
+      });
+      it('should throw NotFoundError when comment not found', async () => {
+        // Arrange
+        const newReply = new NewReply({ content: 'kana' });
+        await UsersTableTestHelper.addUser({ id: 'user-123' });
+        await ThreadsTableTestHelper.addThread({ id: 'thread-123' });
+        const fakeIdGenerator = () => '123'; // stub!
+        const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, fakeIdGenerator);
+
+        // Action & Assert
+        await expect(replyRepositoryPostgres
+          .addReply(newReply, 'thread-123', 'comment-123', 'user-123'))
+          .rejects.toThrowError(NotFoundError);
+      });
     });
 
     describe('verifyReplyAccess', () => {
