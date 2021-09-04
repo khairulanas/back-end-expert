@@ -9,7 +9,6 @@ const ServerTesthelper = {
     password = 'hanazawa',
     fullname = 'kana hanazawa',
   }) {
-    console.log(id);
     // Add new user
     const query = {
       text: 'INSERT INTO users VALUES($1, $2, $3, $4)',
