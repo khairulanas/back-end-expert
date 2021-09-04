@@ -4,28 +4,26 @@ const pool = require('../src/Infrastructures/database/postgres/pool');
 
 const ServerTesthelper = {
   async getAccessToken({
-    userId = 'user-123',
+    id = 'user-123',
+    username = 'kana',
+    password = 'hanazawa',
+    fullname = 'kana hanazawa',
   }) {
-    const userPayload = {
-      id: userId,
-      username: 'kana',
-      password: 'hanazawa',
-      fullname: 'kana hanazawa',
-    };
+    console.log(id);
     // Add new user
     const query = {
       text: 'INSERT INTO users VALUES($1, $2, $3, $4)',
-      values: [...userPayload],
+      values: [id, username, password, fullname],
     };
     await pool.query(query);
 
     // generate token
     const accessToken = Jwt.token.generate(
-      { username: userPayload.username, id: userPayload.id },
+      { username, id },
       process.env.ACCESS_TOKEN_KEY,
     );
     const refreshToken = Jwt.token.generate(
-      { username: userPayload.username, id: userPayload.id },
+      { username, id },
       process.env.REFRESH_TOKEN_KEY,
     );
 
