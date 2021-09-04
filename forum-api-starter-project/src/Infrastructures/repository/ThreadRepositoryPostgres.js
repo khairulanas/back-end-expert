@@ -58,6 +58,7 @@ class ThreadRepositoryPostgres extends ThreadRepository {
     const resReplies = await this._pool.query(repliesQuery);
 
     const replies = (commentId) => resReplies.rows.filter((i) => i.comment_id === commentId)
+      .map((j) => ({ ...j, content: j.is_delete ? '**balasan telah dihapus**' : j.content }))
       .map(mapDBToDetailReply);
     const comments = resComments.rows.map((i) => ({
       ...i,

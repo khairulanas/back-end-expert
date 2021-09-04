@@ -91,6 +91,14 @@ describe('ThreadRepositoryPostgres', () => {
           commentId: 'comment-123',
           owner: 'user-123',
         });
+        await RepliesTableTestHelper.addReply({
+          id: 'reply-321',
+          threadId: 'thread-123',
+          commentId: 'comment-123',
+          date: '2021-09-08T07:59:48.766Z',
+          isDelete: true,
+          owner: 'user-123',
+        });
         const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
 
         // Action
@@ -101,9 +109,8 @@ describe('ThreadRepositoryPostgres', () => {
         expect(detailThread.body).toEqual('magical mode');
         expect(detailThread.username).toEqual('user-123');
         expect(detailThread.comments).toHaveLength(2);
-        expect(detailThread.comments[0].username).toEqual('user-123');
-        expect(detailThread.comments[0].replies).toHaveLength(1);
-        expect(detailThread.comments[0].replies[0].id).toEqual('reply-123');
+        expect(detailThread.comments[0].replies).toHaveLength(2);
+        expect(detailThread.comments[0].replies[1].content).toEqual('**balasan telah dihapus**');
         expect(detailThread.comments[1].content).toEqual('**komentar telah dihapus**');
       });
     });
