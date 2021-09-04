@@ -7,6 +7,7 @@ const pool = require('../../database/postgres/pool');
 const ThreadRepositoryPostgres = require('../ThreadRepositoryPostgres');
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const CommentsTableTestHelper = require('../../../../tests/CommentsTableTestHelper');
+const RepliesTableTestHelper = require('../../../../tests/RepliesTableTestHelper');
 
 describe('ThreadRepositoryPostgres', () => {
   it('should be instance of ThreadRepository domain', () => {
@@ -17,6 +18,8 @@ describe('ThreadRepositoryPostgres', () => {
 
   describe('behavior test', () => {
     afterEach(async () => {
+      await RepliesTableTestHelper.cleanTable();
+      await CommentsTableTestHelper.cleanTable();
       await ThreadsTableTestHelper.cleanTable();
       await UsersTableTestHelper.cleanTable();
     });
@@ -63,29 +66,37 @@ describe('ThreadRepositoryPostgres', () => {
 
       it('should return detail thread correctly', async () => {
         // Arrange
-        await UsersTableTestHelper.addUser({ id: 'user-321' });
+        await UsersTableTestHelper.addUser({ id: 'user-123' });
         await ThreadsTableTestHelper.addThread({
-          id: 'thread-321',
+          id: 'thread-123',
           title: 'kanaha',
           body: 'magical mode',
-          owner: 'user-321',
+          owner: 'user-123',
         });
         await CommentsTableTestHelper.addComment({
           id: 'comment-123',
-          threadId: 'thread-321',
-          owner: 'user-321',
+          threadId: 'thread-123',
+          owner: 'user-123',
+        });
+        await RepliesTableTestHelper.addReply({
+          id: 'reply-123',
+          threadId: 'thread-123',
+          commentId: 'comment-123',
+          owner: 'user-123',
         });
         const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
 
         // Action
-        const detailThread = await threadRepositoryPostgres.getThreadById('thread-321');
+        const detailThread = await threadRepositoryPostgres.getThreadById('thread-123');
 
         // Assert
         expect(detailThread.title).toEqual('kanaha');
         expect(detailThread.body).toEqual('magical mode');
-        expect(detailThread.username).toEqual('user-321');
+        expect(detailThread.username).toEqual('user-123');
         expect(detailThread.comments).toHaveLength(1);
-        expect(detailThread.comments[0].username).toEqual('user-321');
+        expect(detailThread.comments[0].username).toEqual('user-123');
+        expect(detailThread.comments[0].replies).toHaveLength(1);
+        expect(detailThread.comments[0].replies[0].id).toEqual('reply-123');
       });
     });
   });

@@ -58,7 +58,7 @@ class ThreadRepositoryPostgres extends ThreadRepository {
 
     const replies = (commentId) => resReplies.rows.filter((i) => i.comment_id === commentId)
       .map(mapDBToDetailReply);
-    const comments = resComments.rows.map((i) => ({ ...i, replies: replies(i.comment_id) }))
+    const comments = resComments.rows.map((i) => ({ ...i, replies: replies(i.id) }))
       .map(mapDBToDetailComment);
     return result.rows.map(mapDBToDetailThread)
       .map((i) => ({ ...i, comments }))[0];
