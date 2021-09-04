@@ -103,11 +103,11 @@ describe('ThreadRepositoryPostgres', () => {
 
         // Action
         const detailThread = await threadRepositoryPostgres.getThreadById('thread-123');
-        console.log(detailThread.comments[0].replies);
+
         // Assert
         expect(detailThread.title).toEqual('kanaha');
         expect(detailThread.body).toEqual('magical mode');
-        expect(detailThread.username).toEqual('user-123');
+        expect(detailThread.username).toEqual('dicoding');
         expect(detailThread.comments).toHaveLength(2);
         expect(detailThread.comments[0].replies).toHaveLength(2);
         expect(detailThread.comments[0].replies[1].content).toEqual('**balasan telah dihapus**');

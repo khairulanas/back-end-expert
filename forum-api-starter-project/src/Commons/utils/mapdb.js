@@ -5,36 +5,36 @@ const mapDBToDetailThread = ({
   title,
   body,
   date,
-  owner,
+  username,
 }) => ({
   id,
   title,
   body,
   date,
-  username: owner,
+  username,
 });
 
 const mapDBToDetailComment = ({
   id,
-  owner,
+  username,
   date,
   content,
   replies,
 }) => ({
   id,
-  username: owner,
+  username,
   date,
   content,
   replies,
 });
 const mapDBToDetailReply = ({
   id,
-  owner,
+  username,
   date,
   content,
 }) => ({
   id,
-  username: owner,
+  username,
   date,
   content,
 });
