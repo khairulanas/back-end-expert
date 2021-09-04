@@ -78,6 +78,13 @@ describe('ThreadRepositoryPostgres', () => {
           threadId: 'thread-123',
           owner: 'user-123',
         });
+        await CommentsTableTestHelper.addComment({
+          id: 'comment-321',
+          threadId: 'thread-123',
+          date: '2021-09-08T07:59:48.766Z',
+          isDelete: true,
+          owner: 'user-123',
+        });
         await RepliesTableTestHelper.addReply({
           id: 'reply-123',
           threadId: 'thread-123',
@@ -88,15 +95,16 @@ describe('ThreadRepositoryPostgres', () => {
 
         // Action
         const detailThread = await threadRepositoryPostgres.getThreadById('thread-123');
-
+        console.log(detailThread.comments[0].replies);
         // Assert
         expect(detailThread.title).toEqual('kanaha');
         expect(detailThread.body).toEqual('magical mode');
         expect(detailThread.username).toEqual('user-123');
-        expect(detailThread.comments).toHaveLength(1);
+        expect(detailThread.comments).toHaveLength(2);
         expect(detailThread.comments[0].username).toEqual('user-123');
         expect(detailThread.comments[0].replies).toHaveLength(1);
         expect(detailThread.comments[0].replies[0].id).toEqual('reply-123');
+        expect(detailThread.comments[1].content).toEqual('**komentar telah dihapus**');
       });
     });
   });
