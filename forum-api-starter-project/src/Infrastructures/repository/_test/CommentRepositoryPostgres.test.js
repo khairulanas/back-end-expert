@@ -50,6 +50,17 @@ describe('CommentRepositoryPostgres', () => {
         expect(comment).toHaveLength(1);
         expect(comment[0].is_delete).toEqual(false);
       });
+      it('should throw NotFoundError when thread not found', async () => {
+        // Arrange
+        const newComment = new NewComment({ content: 'kana' });
+        const fakeIdGenerator = () => '123'; // stub!
+        const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, fakeIdGenerator);
+
+        // Action & Assert
+        await expect(commentRepositoryPostgres.addComment(newComment, 'thread-123', 'user-123'))
+          .rejects
+          .toThrowError(NotFoundError);
+      });
     });
 
     describe('verifyCommentAccess', () => {

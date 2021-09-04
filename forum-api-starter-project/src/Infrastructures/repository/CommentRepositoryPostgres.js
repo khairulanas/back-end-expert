@@ -17,6 +17,15 @@ class CommentRepositoryPostgres extends CommentRepository {
     const date = now.toISOString();
     const isDelete = false;
 
+    const queryThread = {
+      text: 'SELECT id FROM threads WHERE id = $1',
+      values: [threadId],
+    };
+    const resultThread = await this._pool.query(queryThread);
+    if (!resultThread.rowCount) {
+      throw new NotFoundError('tidak bisa menambah kodemntar: thread tidak ditemukan');
+    }
+
     const query = {
       text: 'INSERT INTO comments VALUES($1, $2, $3, $4, $5,$6) RETURNING id, content, owner',
       values: [id, threadId, content, date, isDelete, owner],
