@@ -11,9 +11,6 @@ const routes = (handler) => ([
     method: 'GET',
     path: '/threads/{threadId}',
     handler: handler.getDetailThreadHandler,
-    options: {
-      auth: 'forumapp_jwt',
-    },
   },
 ]);
 

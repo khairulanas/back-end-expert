@@ -3,6 +3,9 @@ const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper
 const ServerTesthelper = require('../../../../tests/ServerTesthelper');
 const injections = require('../../injections');
 const createServer = require('../createServer');
+const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
+const CommentsTableTestHelper = require('../../../../tests/CommentsTableTestHelper');
+const RepliesTableTestHelper = require('../../../../tests/RepliesTableTestHelper');
 
 describe('/threads endpoint', () => {
   afterAll(async () => {
@@ -10,7 +13,10 @@ describe('/threads endpoint', () => {
   });
 
   afterEach(async () => {
+    await RepliesTableTestHelper.cleanTable();
+    await CommentsTableTestHelper.cleanTable();
     await ThreadsTableTestHelper.cleanTable();
+    await UsersTableTestHelper.cleanTable();
     await ServerTesthelper.cleanTable();
   });
 
@@ -62,7 +68,6 @@ describe('/threads endpoint', () => {
 
       // Assert
       const responseJson = JSON.parse(response.payload);
-      console.log(responseJson);
       expect(response.statusCode).toEqual(400);
       expect(responseJson.status).toEqual('fail');
       expect(responseJson.message).toBeDefined();
@@ -86,8 +91,61 @@ describe('/threads endpoint', () => {
       });
 
       // Assert
-      const responseJson = JSON.parse(response.payload);
       expect(response.statusCode).toEqual(401);
+    });
+  });
+
+  describe('when GET /threads/{threadId}', () => {
+    it('should response 200 and persisted detail thread', async () => {
+      // Arrange
+      await UsersTableTestHelper.addUser({ id: 'user-123' });
+      await ThreadsTableTestHelper.addThread({
+        id: 'thread-123',
+        title: 'kanaha',
+        body: 'magical mode',
+        owner: 'user-123',
+      });
+      await CommentsTableTestHelper.addComment({
+        id: 'comment-123',
+        threadId: 'thread-123',
+        owner: 'user-123',
+      });
+      await RepliesTableTestHelper.addReply({
+        id: 'reply-123',
+        threadId: 'thread-123',
+        commentId: 'comment-123',
+        owner: 'user-123',
+      });
+      const server = await createServer(injections);
+
+      // Action
+      const response = await server.inject({
+        method: 'GET',
+        url: '/threads/thread-123',
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(200);
+      expect(responseJson.status).toEqual('success');
+      expect(responseJson.data.thread).toBeDefined();
+    });
+
+    it('should response 404 when no thread found', async () => {
+      // Arrange
+      const server = await createServer(injections);
+
+      // Action
+      const response = await server.inject({
+        method: 'GET',
+        url: '/threads/thread-123',
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(404);
+      expect(responseJson.status).toEqual('fail');
+      expect(responseJson.message).toBeDefined();
     });
   });
 });
