@@ -1,37 +1,37 @@
-class CommentHandler {
-  constructor({ addCommentUseCase, deleteCommentUseCase }) {
-    this._addCommentUseCase = addCommentUseCase;
-    this._deleteCommentUseCase = deleteCommentUseCase;
+class ReplyHandler {
+  constructor({ addReplyUseCase, deleteReplyUseCase }) {
+    this._addReplyUseCase = addReplyUseCase;
+    this._deleteReplyUseCase = deleteReplyUseCase;
 
-    this.postCommentHandler = this.postCommentHandler.bind(this);
-    this.deleteCommentHandler = this.deleteCommentHandler.bind(this);
+    this.postReplyHandler = this.postReplyHandler.bind(this);
+    this.deleteReplyHandler = this.deleteReplyHandler.bind(this);
   }
 
-  async postCommentHandler(request, h) {
+  async postReplyHandler(request, h) {
     const useCasePayload = {
       threadId: request.params.threadId,
+      commentId: request.params.commentId,
       content: request.payload.content,
       owner: request.auth.credentials.id,
     };
-    const addedComment = await this._addCommentUseCase.execute(useCasePayload);
+    const addedReply = await this._addReplyUseCase.execute(useCasePayload);
 
     const response = h.response({
       status: 'success',
       data: {
-        addedComment,
+        addedReply,
       },
     });
     response.code(201);
     return response;
   }
 
-  async deleteCommentHandler(request, h) {
+  async deleteReplyHandler(request, h) {
     const useCasePayload = {
-      threadId: request.params.threadId,
-      commentId: request.params.commentId,
+      replyId: request.params.replyId,
       credentialId: request.auth.credentials.id,
     };
-    await this._deleteCommentUseCase.execute(useCasePayload);
+    await this._deleteReplyUseCase.execute(useCasePayload);
     const response = h.response({
       status: 'success',
     });
@@ -40,4 +40,4 @@ class CommentHandler {
   }
 }
 
-module.exports = CommentHandler;
+module.exports = ReplyHandler;
