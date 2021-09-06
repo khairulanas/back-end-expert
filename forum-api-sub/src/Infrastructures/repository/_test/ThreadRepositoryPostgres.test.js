@@ -73,6 +73,60 @@ describe('ThreadRepositoryPostgres', () => {
           body: 'magical mode',
           owner: 'user-123',
         });
+        const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
+
+        // Action
+        const detailThread = await threadRepositoryPostgres.getThreadById('thread-123');
+
+        // Assert
+        expect(detailThread[0].title).toEqual('kanaha');
+        expect(detailThread[0].body).toEqual('magical mode');
+        expect(detailThread[0].username).toEqual('dicoding');
+      });
+    });
+
+    describe('getCommentByThreadId', () => {
+      it('should return array of Comment in thread', async () => {
+        // Arrange
+        await UsersTableTestHelper.addUser({ id: 'user-123' });
+        await ThreadsTableTestHelper.addThread({
+          id: 'thread-123',
+          title: 'kanaha',
+          body: 'magical mode',
+          owner: 'user-123',
+        });
+        await CommentsTableTestHelper.addComment({
+          id: 'comment-123',
+          threadId: 'thread-123',
+          owner: 'user-123',
+        });
+        await CommentsTableTestHelper.addComment({
+          id: 'comment-321',
+          threadId: 'thread-123',
+          date: '2021-09-08T07:59:48.766Z',
+          isDelete: true,
+          owner: 'user-123',
+        });
+        const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
+
+        // Action
+        const comments = await threadRepositoryPostgres.getCommentByThreadId('thread-123');
+
+        // Assert
+        expect(comments).toHaveLength(2);
+      });
+    });
+
+    describe('getReplyByThreadId', () => {
+      it('should return array of Reply in Comment in thread', async () => {
+        // Arrange
+        await UsersTableTestHelper.addUser({ id: 'user-123' });
+        await ThreadsTableTestHelper.addThread({
+          id: 'thread-123',
+          title: 'kanaha',
+          body: 'magical mode',
+          owner: 'user-123',
+        });
         await CommentsTableTestHelper.addComment({
           id: 'comment-123',
           threadId: 'thread-123',
@@ -102,16 +156,10 @@ describe('ThreadRepositoryPostgres', () => {
         const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
 
         // Action
-        const detailThread = await threadRepositoryPostgres.getThreadById('thread-123');
+        const replies = await threadRepositoryPostgres.getReplyByThreadId('thread-123');
 
         // Assert
-        expect(detailThread.title).toEqual('kanaha');
-        expect(detailThread.body).toEqual('magical mode');
-        expect(detailThread.username).toEqual('dicoding');
-        expect(detailThread.comments).toHaveLength(2);
-        expect(detailThread.comments[0].replies).toHaveLength(2);
-        expect(detailThread.comments[0].replies[1].content).toEqual('**balasan telah dihapus**');
-        expect(detailThread.comments[1].content).toEqual('**komentar telah dihapus**');
+        expect(replies).toHaveLength(2);
       });
     });
   });
