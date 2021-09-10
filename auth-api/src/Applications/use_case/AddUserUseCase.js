@@ -1,18 +1,17 @@
-/* eslint-disable no-underscore-dangle */
-const NewUser = require('../../Domains/users/entities/NewUser');
+const RegisterUser = require('../../Domains/users/entities/RegisterUser');
 
-class AddedUserUseCase {
-  constructor({ userRepository, encryptionHelper }) {
+class AddUserUseCase {
+  constructor({ userRepository, passwordHash }) {
     this._userRepository = userRepository;
-    this._encryptionHelper = encryptionHelper;
+    this._passwordHash = passwordHash;
   }
 
   async execute(useCasePayload) {
-    const newUser = new NewUser(useCasePayload);
-    await this._userRepository.verifyAvailableUsername(newUser.username);
-    newUser.password = await this._encryptionHelper.encryptPassword(newUser.password);
-    return this._userRepository.addUser(newUser);
+    const registerUser = new RegisterUser(useCasePayload);
+    await this._userRepository.verifyAvailableUsername(registerUser.username);
+    registerUser.password = await this._passwordHash.hash(registerUser.password);
+    return this._userRepository.addUser(registerUser);
   }
 }
 
-module.exports = AddedUserUseCase;
+module.exports = AddUserUseCase;

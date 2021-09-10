@@ -16,19 +16,20 @@
   "license": "ISC",
   "dependencies": {
     "@hapi/hapi": "^20.1.5",
-    "@hapi/jwt": "^2.1.0",
+    "@hapi/jwt": "^2.0.1",
     "bcrypt": "^5.0.1",
     "dotenv": "^10.0.0",
-    "nanoid": "^3.1.25",
-    "pg": "^8.7.1"
+    "instances-container": "^2.0.3",
+    "nanoid": "^3.1.23",
+    "pg": "^8.6.0"
   },
   "devDependencies": {
-    "@types/jest": "^27.0.1",
-    "eslint": "^7.32.0",
+    "@types/jest": "^26.0.24",
+    "eslint": "^7.30.0",
     "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-plugin-import": "^2.24.1",
+    "eslint-plugin-import": "^2.23.4",
     "jest": "^27.0.6",
     "node-pg-migrate": "^5.10.0",
-    "nodemon": "^2.0.12"
+    "nodemon": "^2.0.9"
   }
 }

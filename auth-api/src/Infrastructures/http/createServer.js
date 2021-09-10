@@ -2,8 +2,9 @@ const Hapi = require('@hapi/hapi');
 const ClientError = require('../../Commons/exceptions/ClientError');
 const DomainErrorTranslator = require('../../Commons/exceptions/DomainErrorTranslator');
 const users = require('../../Interfaces/http/api/users');
+const authentications = require('../../Interfaces/http/api/authentications');
 
-const createServer = async (injections) => {
+const createServer = async (container) => {
   const server = Hapi.server({
     host: process.env.HOST,
     port: process.env.PORT,
@@ -12,17 +13,22 @@ const createServer = async (injections) => {
   await server.register([
     {
       plugin: users,
-      options: { injections },
+      options: { container },
+    },
+    {
+      plugin: authentications,
+      options: { container },
     },
   ]);
 
   server.ext('onPreResponse', (request, h) => {
     // mendapatkan konteks response dari request
     const { response } = request;
-    console.log(response);
+
     if (response instanceof Error) {
       // bila response tersebut error, tangani sesuai kebutuhan
       const translatedError = DomainErrorTranslator.translate(response);
+
       // penanganan client error secara internal.
       if (translatedError instanceof ClientError) {
         const newResponse = h.response({
@@ -46,6 +52,7 @@ const createServer = async (injections) => {
       newResponse.code(500);
       return newResponse;
     }
+
     // jika bukan error, lanjutkan dengan response sebelumnya (tanpa terintervensi)
     return h.continue;
   });
